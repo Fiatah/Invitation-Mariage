@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invitation — Steve & Karen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #FAFAFA;
+      --card-bg: #FFFFFF;
+      --text-main: #2A2A2A;
+      --text-muted: #666666;
+      --accent: #8C7A6B;
+      --border: #E8E4DD;
+      --font-title: 'Cormorant Garamond', serif;
+      --font-body: 'Montserrat', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-body); line-height: 1.6; text-align: center; }
+
+    /* 1. ECRAN AUTHENTIFICATION & ENVELOPPE */
+    #auth-screen {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #F3F0EC;
+      display: flex; justify-content: center; align-items: center;
+      z-index: 1000; transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+    }
+    .envelope-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 40px 25px;
+      max-width: 450px; width: 90%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      border-radius: 4px;
+    }
+    .badge-title { font-size: 0.8rem; letter-spacing: 3px; color: var(--accent); margin-bottom: 15px; text-transform: uppercase; }
+    .envelope-box h2 { font-family: var(--font-title); font-size: 2.2rem; margin-bottom: 10px; font-weight: 400; }
+    .envelope-box p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 25px; }
+
+    .input-phone {
+      width: 100%; padding: 12px; border: 1px solid var(--border);
+      border-radius: 4px; font-size: 1rem; text-align: center;
+      margin-bottom: 15px; font-family: inherit; outline: none;
+    }
+    .btn-verify {
+      width: 100%; padding: 14px; background: var(--text-main); color: #FFF;
+      text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;
+      border: none; border-radius: 2px; cursor: pointer; transition: background 0.3s;
+    }
+    .btn-verify:hover { background: var(--accent); }
+    .error-msg { color: #d9534f; font-size: 0.85rem; margin-top: 10px; display: none; }
+
+    /* 2. CONTENU DE L'INVITATION */
+    #main-content { display: none; opacity: 0; transition: opacity 1s ease; padding: 20px; max-width: 800px; margin: 0 auto; }
+
+    /* Photo du couple */
+    .hero-photo {
+      width: 100%; max-height: 500px;
+      object-fit: cover; border-radius: 4px;
+      margin-top: 20px; margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .welcome-header { font-size: 1.1rem; color: var(--accent); font-weight: 500; letter-spacing: 1px; margin-bottom: 5px; }
+    .invitation-text h1 { font-family: var(--font-title); font-size: 3rem; margin-bottom: 5px; font-weight: 400; }
+    .invitation-text .subtitle { font-size: 1.1rem; color: var(--accent); letter-spacing: 2px; margin-bottom: 20px; font-weight: 600; }
+    .invitation-text p { font-size: 1.05rem; color: #444; max-width: 600px; margin: 0 auto 20px; }
+
+    .table-info {
+      display: inline-block; background: #F3F0EC; border: 1px solid var(--border);
+      padding: 10px 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 500;
+      color: var(--text-main); margin-bottom: 30px;
+    }
+
+    /* Bloc Adresse */
+    .address-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      padding: 25px; border-radius: 4px; margin: 30px 0; text-align: left;
+    }
+    .address-card h3 { font-family: var(--font-title); font-size: 1.6rem; margin-bottom: 10px; }
+    .btn-map {
+      display: inline-block; margin-top: 15px; padding: 10px 20px;
+      background: var(--accent); color: #FFF; text-decoration: none;
+      font-size: 0.85rem; border-radius: 2px; text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    /* Formulaire RSVP & Préférences */
+    .rsvp-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      padding: 30px 20px; border-radius: 4px; margin: 40px 0; text-align: left;
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; color: var(--text-muted); }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 12px; border: 1px solid var(--border);
+      border-radius: 4px; font-family: inherit; background: #FAFAFA; font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Étape 1 : Authentification & Enveloppe -->
+  <div id="auth-screen">
+    <div class="envelope-box">
+      <div class="badge-title">Invitation Privée</div>
+      <h2>Steve &amp; Karen</h2>
+      <p>Entrez votre numéro de téléphone pour ouvrir votre invitation :</p>
+      
+      <input type="tel" id="user-phone" class="input-phone" placeholder="Ex: 0810000000" required>
+      <button class="btn-verify" onclick="verifierInvite()">✉ Ouvrir l'enveloppe</button>
+      
+      <div id="error-message" class="error-msg">Ce numéro ne figure pas sur la liste des invités. Veuillez vérifier votre saisie.</div>
+    </div>
+  </div>
+
+  <!-- Étape 2 : Le Site d'Invitation -->
+  <div id="main-content">
+    
+    <!-- Photo officielle -->
+    <img src="mariés.jpg" alt="Steve et Karen" class="hero-photo">
+
+    <div class="welcome-header" id="guest-welcome">Bienvenue</div>
+
+    <!-- Textes d'invitation -->
+    <div class="invitation-text">
+      <h1>Steve &amp; Karen</h1>
+      <div class="subtitle">13 SEPTEMBRE 2026</div>
+      <p>
+        Ont la joie de vous inviter à célébrer leur union. Votre présence à nos côtés rendra ce moment encore plus mémorable.
+      </p>
+    </div>
+
+    <!-- Numéro de Table Attribué -->
+    <div id="guest-table-box" class="table-info">📍 Votre Table réservée : <strong id="guest-table-number">Table d'Honneur</strong></div>
+
+    <!-- Adresse & Carte -->
+    <div class="address-card">
+      <h3>Le Lieu de la Célébration</h3>
+      <p><strong>Domaine des Lumières</strong></p>
+      <p>124 Avenue des Roses, Kinshasa</p>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">Cérémonie &amp; Réception au même endroit.</p>
+      <a href="https://maps.google.com" target="_blank" class="btn-map">📍 Afficher l'itinéraire (Google Maps)</a>
+    </div>
+
+    <!-- Formulaire RSVP + Choix Poisson/Viande + Livre d'Or -->
+    <div class="rsvp-card">
+      <h3 style="font-family: var(--font-title); font-size: 1.8rem; margin-bottom: 20px; text-align: center;">Confirmation &amp; Préférences</h3>
+      
+      <form id="wedding-form" onsubmit="submitRSVP(event)">
+        <div class="form-group">
+          <label>Nom &amp; Prénom</label>
+          <input type="text" id="guest_name_input" readonly>
+        </div>
+
+        <div class="form-group">
+          <label>Serez-vous présent ?</label>
+          <select id="guest_presence" required>
+            <option value="Présent">Oui, avec grand plaisir !</option>
+            <option value="Absent">Désolé(e), je ne pourrai pas venir</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Choix du Plat Principal (Préférence)</label>
+          <select id="guest_meal" required>
+            <option value="Poisson">🐟 Menu Poisson</option>
+            <option value="Viande">🥩 Menu Viande</option>
+            <option value="Vegetarien">🥗 Menu Végétarien</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Livre d'or (Un mot pour les mariés)</label>
+          <textarea id="guest_message" rows="4" placeholder="Laissez vos vœux ou un petit mot chaleureux pour Steve &amp; Karen..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-verify">Confirmer ma réponse</button>
+      </form>
+    </div>
+
+  </div>
+
+  <script>
+    // BASE DE DONNÉES DES INVITÉS (A remplir avec vos données Excel)
+    const baseInvites = [
+      { tel: "0810000000", nom: "Famille Dupont", table: "Table 1" },
+      { tel: "0820000000", nom: "Marc & Sophie", table: "Table d'Honneur" },
+      { tel: "0830000000", nom: "M. Albert Fiata", table: "Table VIP" }
+    ];
+
+    function verifierInvite() {
+      const inputTel = document.getElementById('user-phone').value.replace(/[^0-9]/g, '');
+      const errorMsg = document.getElementById('error-message');
+      
+      // Recherche du numéro dans la liste
+      const inviteTrouve = baseInvites.find(i => i.tel.replace(/[^0-9]/g, '') === inputTel);
+
+      if (inviteTrouve) {
+        errorMsg.style.display = 'none';
+        
+        // Personnalisation des données de l'invité
+        document.getElementById('guest-welcome').innerText = `Bienvenue, ${inviteTrouve.nom}`;
+        document.getElementById('guest-table-number').innerText = inviteTrouve.table;
+        document.getElementById('guest_name_input').value = inviteTrouve.nom;
+
+        // Animation d'ouverture
+        const screen = document.getElementById('auth-screen');
+        const main = document.getElementById('main-content');
+        
+        screen.style.transform = 'translateY(-100%)';
+        screen.style.opacity = '0';
+        
+        setTimeout(() => {
+          screen.style.display = 'none';
+          main.style.display = 'block';
+          setTimeout(() => { main.style.opacity = '1'; }, 50);
+        }, 800);
+
+      } else {
+        errorMsg.style.display = 'block';
+      }
+    }
+
+    function submitRSVP(e) {
+      e.preventDefault();
+      alert("Merci ! Votre confirmation et vos choix de repas ont bien été transmis à Steve & Karen.");
+    }
+  </script>
+</body>
+</html>
