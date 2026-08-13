@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invitation — Steve & Karen</title>
+  <title>Invitation — Steve & Joyce</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -241,7 +241,7 @@
       </div>
 
       <div class="badge-title">Invitation Privée</div>
-      <h2>Steve &amp; Karen</h2>
+      <h2>Steve &amp; Joyce</h2>
       <p>Entrez votre numéro de téléphone pour ouvrir votre invitation :</p>
       
       <input type="text" id="user-phone" class="input-phone" placeholder="Ex: 0811234567" autocomplete="off">
@@ -276,7 +276,7 @@
 
     <!-- Photo officielle du couple -->
     <div class="hero-photo-container">
-      <img src="SK.jpg" alt="Steve et Karen" class="hero-photo">
+      <img src="SK.jpg" alt="Steve et Joyce" class="hero-photo">
     </div>
 
     <div class="welcome-header" id="guest-welcome">Bienvenue</div>
@@ -284,7 +284,7 @@
 
     <div class="invitation-text">
       <p class="intro-tag">Au mariage de</p>
-      <h1>Steve &amp; Karen</h1>
+      <h1>Steve &amp; Joyce</h1>
       <p>Vous êtes invités à célébrer leur union. Votre présence à leurs côtés rendra ce moment encore plus mémorable.</p>
     </div>
 
@@ -323,15 +323,15 @@
     <div class="rsvp-card">
       <h3>Confirmation &amp; Préférences</h3>
       
-      <form id="wedding-form" onsubmit="event.preventDefault(); alert('Merci pour votre confirmation !');">
+      <form id="wedding-form" action="https://formspree.io/f/xzyqxxxx" method="POST">
         <div class="form-group">
           <label>Nom &amp; Prénom de l'invité</label>
-          <input type="text" id="guest_name_input" readonly>
+          <input type="text" id="guest_name_input" name="Nom_Invité" readonly required>
         </div>
 
         <div class="form-group">
           <label>Confirmation de présence</label>
-          <select id="guest_presence" required>
+          <select id="guest_presence" name="Presence" required>
             <option value="Présent">Oui, je serai présent(e) avec joie</option>
             <option value="Absent">Désolé(e), je ne pourrai pas assister</option>
           </select>
@@ -339,7 +339,7 @@
 
         <div class="form-group">
           <label>Préférence de Boisson</label>
-          <select id="guest_drink" required>
+          <select id="guest_drink" name="Boisson" required>
             <optgroup label="🥤 Boissons Rafraîchissantes & Sucrées">
               <option value="Vitalo">Vitalo (Grenadine / Malt)</option>
               <option value="Fiesta">Fiesta (Orange / Ananas)</option>
@@ -359,7 +359,7 @@
 
         <div class="form-group">
           <label>Livre d'or / Un mot pour les mariés</label>
-          <textarea id="guest_message" rows="4" placeholder="Écrivez vos vœux pour Steve & Karen..."></textarea>
+          <textarea id="guest_message" name="Message" rows="4" placeholder="Écrivez vos vœux pour Steve & Joyce..."></textarea>
         </div>
 
         <button type="submit" class="btn-verify">Confirmer ma réponse</button>
@@ -367,7 +367,7 @@
     </div>
 
     <div class="footer-note">
-      Steve &amp; Karen vous remercient pour votre amour et votre soutien.
+      Steve &amp; Joyce vous remercient pour votre amour et votre soutien.
     </div>
 
   </div>
@@ -378,7 +378,7 @@
       { tel: "0829876543", nom: "Mme Clarisse Tshilombo", table: "Table VIP 1" },
       { tel: "0855551234", nom: "Famille Mulamba", table: "Table 1" },
       { tel: "0890001122", nom: "M. Christian Lukusa", table: "Table VIP 2" },
-      { tel: "0842287075", nom: "M. Steve Tshiniama", table: "Table 2" }
+      { tel: "0818889900", nom: "Mme Sarah Bokelo", table: "Table 2" }
     ];
 
     document.addEventListener("DOMContentLoaded", function() {
