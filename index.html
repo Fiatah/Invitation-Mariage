@@ -15,49 +15,86 @@
       --text-main: #2A2A2A;
       --text-muted: #666666;
       --accent: #8C7A6B;
+      --accent-gold: #D4AF37;
       --border: #E8E4DD;
       --font-title: 'Cormorant Garamond', serif;
       --font-body: 'Montserrat', sans-serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-body); line-height: 1.6; text-align: center; }
+    body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-body); line-height: 1.6; text-align: center; overflow-x: hidden; }
 
-    /* ECRAN AUTHENTIFICATION */
+    /* ECRAN AUTHENTIFICATION / ENVELOPPE */
     #auth-screen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
       background: #F3F0EC;
-      display: flex; justify-content: center; align-items: center;
-      z-index: 1000; transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      z-index: 1000;
+      transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 1s ease-in-out;
     }
+
     .envelope-box {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      padding: 40px 25px;
+      padding: 30px 25px;
       max-width: 450px; width: 90%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      border-radius: 4px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+      border-radius: 6px;
+      position: relative;
+      transition: transform 0.6s ease;
     }
-    .badge-title { font-size: 0.8rem; letter-spacing: 3px; color: var(--accent); margin-bottom: 15px; text-transform: uppercase; }
+
+    /* SVG ANIMATION ENVELOPPE */
+    .envelope-wrapper {
+      width: 110px;
+      height: 90px;
+      margin: 0 auto 15px auto;
+      position: relative;
+      perspective: 600px;
+    }
+
+    .envelope-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* Rabat supérieur interactif */
+    .envelope-flap {
+      transform-origin: top center;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Classe déclenchée au clic pour ouvrir le rabat */
+    .envelope-open .envelope-flap {
+      transform: rotateX(180deg);
+    }
+
+    .badge-title { font-size: 0.8rem; letter-spacing: 3px; color: var(--accent); margin-bottom: 10px; text-transform: uppercase; }
     .envelope-box h2 { font-family: var(--font-title); font-size: 2.2rem; margin-bottom: 10px; font-weight: 400; }
-    .envelope-box p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 25px; }
+    .envelope-box p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 20px; }
 
     .input-phone {
       width: 100%; padding: 12px; border: 1px solid var(--border);
       border-radius: 4px; font-size: 1rem; text-align: center;
       margin-bottom: 15px; font-family: inherit; outline: none;
+      transition: border-color 0.3s;
     }
+    .input-phone:focus { border-color: var(--accent); }
+
     .btn-verify {
       width: 100%; padding: 14px; background: var(--text-main); color: #FFF;
       text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;
-      border: none; border-radius: 2px; cursor: pointer; transition: background 0.3s;
+      border: none; border-radius: 2px; cursor: pointer; transition: background 0.3s, transform 0.2s;
     }
     .btn-verify:hover { background: var(--accent); }
+    .btn-verify:active { transform: scale(0.98); }
+    
     .error-msg { color: #d9534f; font-size: 0.85rem; margin-top: 10px; display: none; }
 
-    /* CONTENU DE L'INVITATION */
-    #main-content { display: none; opacity: 0; transition: opacity 1s ease; padding: 20px; max-width: 800px; margin: 0 auto; }
+    /* CONTENU DE L'INVITATION PRINCIPALE */
+    #main-content { display: none; opacity: 0; transition: opacity 1s ease 0.4s; padding: 20px; max-width: 800px; margin: 0 auto; }
 
     /* PHOTO DU COUPLE DE MARIÉS */
     .hero-photo-container {
@@ -113,9 +150,30 @@
 </head>
 <body>
 
-  <!-- Étape 1 : Authentification -->
+  <!-- Étape 1 : Authentification & Enveloppe -->
   <div id="auth-screen">
-    <div class="envelope-box">
+    <div class="envelope-box" id="envelope-box">
+      
+      <!-- Graphique Enveloppe Vectoriel -->
+      <div class="envelope-wrapper" id="envelope-wrapper">
+        <svg class="envelope-svg" viewBox="0 0 100 80">
+          <!-- Corps / Intérieur de l'enveloppe -->
+          <rect x="5" y="20" width="90" height="55" rx="3" fill="#EFECE6" stroke="#8C7A6B" stroke-width="1.5"/>
+          <!-- Lettre à l'intérieur -->
+          <rect x="12" y="10" width="76" height="50" rx="2" fill="#FFFFFF" stroke="#D3C9BF" stroke-width="1"/>
+          <!-- Plis inférieurs de l'enveloppe -->
+          <path d="M 5 75 L 50 45 L 95 75" fill="none" stroke="#8C7A6B" stroke-width="1.5"/>
+          <path d="M 5 20 L 40 48" fill="none" stroke="#D3C9BF" stroke-width="1"/>
+          <path d="M 95 20 L 60 48" fill="none" stroke="#D3C9BF" stroke-width="1"/>
+          <!-- Rabat supérieur mobile -->
+          <g class="envelope-flap">
+            <path d="M 5 20 L 50 48 L 95 20 Z" fill="#E8E2D9" stroke="#8C7A6B" stroke-width="1.5"/>
+            <!-- Sceau doré -->
+            <circle cx="50" cy="38" r="5" fill="#D4AF37"/>
+          </g>
+        </svg>
+      </div>
+
       <div class="badge-title">Invitation Privée</div>
       <h2>Steve &amp; Karen</h2>
       <p>Entrez votre numéro de téléphone pour ouvrir votre invitation :</p>
@@ -201,6 +259,9 @@
     document.addEventListener("DOMContentLoaded", function() {
       const btn = document.getElementById('btn-submit');
       const input = document.getElementById('user-phone');
+      const envelopeWrapper = document.getElementById('envelope-wrapper');
+      const screen = document.getElementById('auth-screen');
+      const main = document.getElementById('main-content');
 
       function executerVerification() {
         const saisie = input.value.trim().replace(/\D/g, '');
@@ -223,17 +284,21 @@
           document.getElementById('guest-table-number').innerText = inviteTrouve.table;
           document.getElementById('guest_name_input').value = inviteTrouve.nom;
 
-          const screen = document.getElementById('auth-screen');
-          const main = document.getElementById('main-content');
-          
-          screen.style.transform = 'translateY(-100%)';
-          screen.style.opacity = '0';
-          
+          // 1. Déclenche l'animation d'ouverture du rabat de l'enveloppe
+          envelopeWrapper.classList.add('envelope-open');
+
+          // 2. Transition de glissement de l'écran vers le haut après l'ouverture
           setTimeout(() => {
-            screen.style.display = 'none';
-            main.style.display = 'block';
-            setTimeout(() => { main.style.opacity = '1'; }, 50);
-          }, 800);
+            screen.style.transform = 'translateY(-100%)';
+            screen.style.opacity = '0';
+            
+            setTimeout(() => {
+              screen.style.display = 'none';
+              main.style.display = 'block';
+              setTimeout(() => { main.style.opacity = '1'; }, 50);
+            }, 800);
+          }, 700);
+
         } else {
           errorMsg.innerText = "Ce numéro ne figure pas sur la liste des invités. Veuillez vérifier votre saisie.";
           errorMsg.style.display = 'block';
