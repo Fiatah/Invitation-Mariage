@@ -23,7 +23,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-body); line-height: 1.6; text-align: center; }
 
-    /* 1. ECRAN AUTHENTIFICATION & ENVELOPPE */
+    /* ECRAN AUTHENTIFICATION & ENVELOPPE */
     #auth-screen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -56,7 +56,7 @@
     .btn-verify:hover { background: var(--accent); }
     .error-msg { color: #d9534f; font-size: 0.85rem; margin-top: 10px; display: none; }
 
-    /* 2. CONTENU DE L'INVITATION */
+    /* CONTENU DE L'INVITATION */
     #main-content { display: none; opacity: 0; transition: opacity 1s ease; padding: 20px; max-width: 800px; margin: 0 auto; }
 
     /* Photo du couple */
@@ -112,7 +112,7 @@
       <h2>Steve &amp; Karen</h2>
       <p>Entrez votre numéro de téléphone pour ouvrir votre invitation :</p>
       
-      <input type="tel" id="user-phone" class="input-phone" placeholder="Ex: 0810000000" required>
+      <input type="tel" id="user-phone" class="input-phone" placeholder="Ex: 0811234567" required>
       <button class="btn-verify" onclick="verifierInvite()">✉ Ouvrir l'enveloppe</button>
       
       <div id="error-message" class="error-msg">Ce numéro ne figure pas sur la liste des invités. Veuillez vérifier votre saisie.</div>
@@ -187,29 +187,36 @@
   </div>
 
   <script>
-    // BASE DE DONNÉES DES INVITÉS (A remplir avec vos données Excel)
+    // BASE DE DONNÉES DES 10 FAUX INVITÉS POUR LE TEST
     const baseInvites = [
-      { tel: "0810000000", nom: "Famille Dupont", table: "Table 1" },
-      { tel: "0820000000", nom: "Marc & Sophie", table: "Table d'Honneur" },
-      { tel: "0830000000", nom: "M. Albert Fiata", table: "Table VIP" }
+      { tel: "0811234567", nom: "M. Patrick Kabamba", table: "Table d'Honneur" },
+      { tel: "0829876543", nom: "Mme Clarisse Tshilombo", table: "Table VIP 1" },
+      { tel: "0855551234", nom: "Famille Mulamba", table: "Table 1" },
+      { tel: "0890001122", nom: "M. Christian Lukusa", table: "Table VIP 2" },
+      { tel: "0818889900", nom: "Mme Sarah Bokelo", table: "Table 2" },
+      { tel: "0823334455", nom: "Dr. Joseph Mbuyi", table: "Table d'Honneur" },
+      { tel: "0857778899", nom: "Mlle Naomi Kazadi", table: "Table 3" },
+      { tel: "0894445566", nom: "M. Eric Ilunga", table: "Table VIP 1" },
+      { tel: "0812223344", nom: "Famille Kabasele", table: "Table 4" },
+      { tel: "0826667788", nom: "Mme Grace Ngalula", table: "Table 2" }
     ];
 
     function verifierInvite() {
       const inputTel = document.getElementById('user-phone').value.replace(/[^0-9]/g, '');
       const errorMsg = document.getElementById('error-message');
       
-      // Recherche du numéro dans la liste
+      // Recherche du numéro nettoyé dans la liste
       const inviteTrouve = baseInvites.find(i => i.tel.replace(/[^0-9]/g, '') === inputTel);
 
       if (inviteTrouve) {
         errorMsg.style.display = 'none';
         
-        // Personnalisation des données de l'invité
+        // Personnalisation dynamique avec les données de l'invité
         document.getElementById('guest-welcome').innerText = `Bienvenue, ${inviteTrouve.nom}`;
         document.getElementById('guest-table-number').innerText = inviteTrouve.table;
         document.getElementById('guest_name_input').value = inviteTrouve.nom;
 
-        // Animation d'ouverture
+        // Animation d'ouverture de l'enveloppe
         const screen = document.getElementById('auth-screen');
         const main = document.getElementById('main-content');
         
