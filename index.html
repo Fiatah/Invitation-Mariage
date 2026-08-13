@@ -112,8 +112,11 @@
       <h2>Steve &amp; Karen</h2>
       <p>Entrez votre numéro de téléphone pour ouvrir votre invitation :</p>
       
-      <input type="tel" id="user-phone" class="input-phone" placeholder="Ex: 0811234567" required>
-      <button class="btn-verify" onclick="verifierInvite()">✉ Ouvrir l'enveloppe</button>
+      <!-- Utilisation d'un formulaire pour capturer le clic ET la touche Entrée -->
+      <form onsubmit="verifierInvite(event)">
+        <input type="text" id="user-phone" class="input-phone" placeholder="Ex: 0811234567" required autocomplete="off">
+        <button type="submit" class="btn-verify">✉ Ouvrir l'enveloppe</button>
+      </form>
       
       <div id="error-message" class="error-msg">Ce numéro ne figure pas sur la liste des invités. Veuillez vérifier votre saisie.</div>
     </div>
@@ -187,7 +190,7 @@
   </div>
 
   <script>
-    // BASE DE DONNÉES DES 10 FAUX INVITÉS POUR LE TEST
+    // BASE DE DONNÉES DES 10 INVITÉS
     const baseInvites = [
       { tel: "0811234567", nom: "M. Patrick Kabamba", table: "Table d'Honneur" },
       { tel: "0829876543", nom: "Mme Clarisse Tshilombo", table: "Table VIP 1" },
@@ -201,22 +204,23 @@
       { tel: "0826667788", nom: "Mme Grace Ngalula", table: "Table 2" }
     ];
 
-    function verifierInvite() {
-      const inputTel = document.getElementById('user-phone').value.replace(/[^0-9]/g, '');
+    function verifierInvite(e) {
+      if (e) e.preventDefault(); // Empêche le rechargement de la page
+      
+      const rawInput = document.getElementById('user-phone').value;
+      const inputTel = rawInput.replace(/[^0-9]/g, ''); // Ne garde que les chiffres
       const errorMsg = document.getElementById('error-message');
       
-      // Recherche du numéro nettoyé dans la liste
+      // Recherche souple : compare les seuls chiffres
       const inviteTrouve = baseInvites.find(i => i.tel.replace(/[^0-9]/g, '') === inputTel);
 
       if (inviteTrouve) {
         errorMsg.style.display = 'none';
         
-        // Personnalisation dynamique avec les données de l'invité
         document.getElementById('guest-welcome').innerText = `Bienvenue, ${inviteTrouve.nom}`;
         document.getElementById('guest-table-number').innerText = inviteTrouve.table;
         document.getElementById('guest_name_input').value = inviteTrouve.nom;
 
-        // Animation d'ouverture de l'enveloppe
         const screen = document.getElementById('auth-screen');
         const main = document.getElementById('main-content');
         
