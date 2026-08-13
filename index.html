@@ -59,7 +59,6 @@
     /* CONTENU DE L'INVITATION */
     #main-content { display: none; opacity: 0; transition: opacity 1s ease; padding: 20px; max-width: 800px; margin: 0 auto; }
 
-    /* Photo du couple */
     .hero-photo {
       width: 100%; max-height: 500px;
       object-fit: cover; border-radius: 4px;
@@ -78,7 +77,6 @@
       color: var(--text-main); margin-bottom: 30px;
     }
 
-    /* Bloc Adresse */
     .address-card {
       background: var(--card-bg); border: 1px solid var(--border);
       padding: 25px; border-radius: 4px; margin: 30px 0; text-align: left;
@@ -90,7 +88,6 @@
       font-size: 0.85rem; border-radius: 2px; text-transform: uppercase; letter-spacing: 1px;
     }
 
-    /* Formulaire RSVP & Préférences */
     .rsvp-card {
       background: var(--card-bg); border: 1px solid var(--border);
       padding: 30px 20px; border-radius: 4px; margin: 40px 0; text-align: left;
@@ -105,18 +102,15 @@
 </head>
 <body>
 
-  <!-- Étape 1 : Authentification & Enveloppe -->
+  <!-- Étape 1 : Authentification -->
   <div id="auth-screen">
     <div class="envelope-box">
       <div class="badge-title">Invitation Privée</div>
       <h2>Steve &amp; Karen</h2>
       <p>Entrez votre numéro de téléphone pour ouvrir votre invitation :</p>
       
-      <!-- Utilisation d'un formulaire pour capturer le clic ET la touche Entrée -->
-      <form onsubmit="verifierInvite(event)">
-        <input type="text" id="user-phone" class="input-phone" placeholder="Ex: 0811234567" required autocomplete="off">
-        <button type="submit" class="btn-verify">✉ Ouvrir l'enveloppe</button>
-      </form>
+      <input type="text" id="user-phone" class="input-phone" placeholder="Ex: 0811234567" autocomplete="off">
+      <button type="button" id="btn-submit" class="btn-verify">✉ Ouvrir l'enveloppe</button>
       
       <div id="error-message" class="error-msg">Ce numéro ne figure pas sur la liste des invités. Veuillez vérifier votre saisie.</div>
     </div>
@@ -124,38 +118,29 @@
 
   <!-- Étape 2 : Le Site d'Invitation -->
   <div id="main-content">
-    
-    <!-- Photo officielle -->
     <img src="mariés.jpg" alt="Steve et Karen" class="hero-photo">
 
     <div class="welcome-header" id="guest-welcome">Bienvenue</div>
 
-    <!-- Textes d'invitation -->
     <div class="invitation-text">
       <h1>Steve &amp; Karen</h1>
       <div class="subtitle">13 SEPTEMBRE 2026</div>
-      <p>
-        Ont la joie de vous inviter à célébrer leur union. Votre présence à nos côtés rendra ce moment encore plus mémorable.
-      </p>
+      <p>Ont la joie de vous inviter à célébrer leur union.</p>
     </div>
 
-    <!-- Numéro de Table Attribué -->
-    <div id="guest-table-box" class="table-info">📍 Votre Table réservée : <strong id="guest-table-number">Table d'Honneur</strong></div>
+    <div id="guest-table-box" class="table-info">📍 Votre Table réservée : <strong id="guest-table-number">-</strong></div>
 
-    <!-- Adresse & Carte -->
     <div class="address-card">
       <h3>Le Lieu de la Célébration</h3>
       <p><strong>Domaine des Lumières</strong></p>
       <p>124 Avenue des Roses, Kinshasa</p>
-      <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">Cérémonie &amp; Réception au même endroit.</p>
-      <a href="https://maps.google.com" target="_blank" class="btn-map">📍 Afficher l'itinéraire (Google Maps)</a>
+      <a href="https://maps.google.com" target="_blank" class="btn-map">📍 Afficher l'itinéraire</a>
     </div>
 
-    <!-- Formulaire RSVP + Choix Poisson/Viande + Livre d'Or -->
     <div class="rsvp-card">
       <h3 style="font-family: var(--font-title); font-size: 1.8rem; margin-bottom: 20px; text-align: center;">Confirmation &amp; Préférences</h3>
       
-      <form id="wedding-form" onsubmit="submitRSVP(event)">
+      <form id="wedding-form">
         <div class="form-group">
           <label>Nom &amp; Prénom</label>
           <input type="text" id="guest_name_input" readonly>
@@ -170,7 +155,7 @@
         </div>
 
         <div class="form-group">
-          <label>Choix du Plat Principal (Préférence)</label>
+          <label>Choix du Plat Principal</label>
           <select id="guest_meal" required>
             <option value="Poisson">🐟 Menu Poisson</option>
             <option value="Viande">🥩 Menu Viande</option>
@@ -179,18 +164,17 @@
         </div>
 
         <div class="form-group">
-          <label>Livre d'or (Un mot pour les mariés)</label>
-          <textarea id="guest_message" rows="4" placeholder="Laissez vos vœux ou un petit mot chaleureux pour Steve &amp; Karen..."></textarea>
+          <label>Livre d'or</label>
+          <textarea id="guest_message" rows="4" placeholder="Laissez vos vœux pour Steve &amp; Karen..."></textarea>
         </div>
 
         <button type="submit" class="btn-verify">Confirmer ma réponse</button>
       </form>
     </div>
-
   </div>
 
   <script>
-    // BASE DE DONNÉES DES 10 INVITÉS
+    // BASE DE DONNÉES INVITÉS (Format épuré)
     const baseInvites = [
       { tel: "0811234567", nom: "M. Patrick Kabamba", table: "Table d'Honneur" },
       { tel: "0829876543", nom: "Mme Clarisse Tshilombo", table: "Table VIP 1" },
@@ -204,44 +188,62 @@
       { tel: "0826667788", nom: "Mme Grace Ngalula", table: "Table 2" }
     ];
 
-    function verifierInvite(e) {
-      if (e) e.preventDefault(); // Empêche le rechargement de la page
-      
-      const rawInput = document.getElementById('user-phone').value;
-      const inputTel = rawInput.replace(/[^0-9]/g, ''); // Ne garde que les chiffres
-      const errorMsg = document.getElementById('error-message');
-      
-      // Recherche souple : compare les seuls chiffres
-      const inviteTrouve = baseInvites.find(i => i.tel.replace(/[^0-9]/g, '') === inputTel);
+    document.addEventListener("DOMContentLoaded", function() {
+      const btn = document.getElementById('btn-submit');
+      const input = document.getElementById('user-phone');
 
-      if (inviteTrouve) {
-        errorMsg.style.display = 'none';
-        
-        document.getElementById('guest-welcome').innerText = `Bienvenue, ${inviteTrouve.nom}`;
-        document.getElementById('guest-table-number').innerText = inviteTrouve.table;
-        document.getElementById('guest_name_input').value = inviteTrouve.nom;
+      function executerVerification() {
+        // Extraction stricte des chiffres uniquement
+        const saisie = input.value.trim().replace(/\D/g, '');
+        const errorMsg = document.getElementById('error-message');
 
-        const screen = document.getElementById('auth-screen');
-        const main = document.getElementById('main-content');
-        
-        screen.style.transform = 'translateY(-100%)';
-        screen.style.opacity = '0';
-        
-        setTimeout(() => {
-          screen.style.display = 'none';
-          main.style.display = 'block';
-          setTimeout(() => { main.style.opacity = '1'; }, 50);
-        }, 800);
+        if (!saisie) {
+          errorMsg.innerText = "Veuillez saisir un numéro de téléphone.";
+          errorMsg.style.display = 'block';
+          return;
+        }
 
-      } else {
-        errorMsg.style.display = 'block';
+        // Comparaison souple (compare si l'un termine par l'autre ou est identique)
+        const inviteTrouve = baseInvites.find(item => {
+          const numStocke = item.tel.replace(/\D/g, '');
+          return numStocke === saisie || numStocke.endsWith(saisie) || saisie.endsWith(numStocke);
+        });
+
+        if (inviteTrouve) {
+          errorMsg.style.display = 'none';
+          
+          document.getElementById('guest-welcome').innerText = `Bienvenue, ${inviteTrouve.nom}`;
+          document.getElementById('guest-table-number').innerText = inviteTrouve.table;
+          document.getElementById('guest_name_input').value = inviteTrouve.nom;
+
+          const screen = document.getElementById('auth-screen');
+          const main = document.getElementById('main-content');
+          
+          screen.style.transform = 'translateY(-100%)';
+          screen.style.opacity = '0';
+          
+          setTimeout(() => {
+            screen.style.display = 'none';
+            main.style.display = 'block';
+            setTimeout(() => { main.style.opacity = '1'; }, 50);
+          }, 800);
+        } else {
+          errorMsg.innerText = "Ce numéro ne figure pas sur la liste des invités. Veuillez vérifier votre saisie.";
+          errorMsg.style.display = 'block';
+        }
       }
-    }
 
-    function submitRSVP(e) {
-      e.preventDefault();
-      alert("Merci ! Votre confirmation et vos choix de repas ont bien été transmis à Steve & Karen.");
-    }
+      // Écoute du Clic sur le bouton
+      btn.addEventListener('click', executerVerification);
+
+      // Écoute de la touche Entrée sur l'input
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          executerVerification();
+        }
+      });
+    });
   </script>
 </body>
 </html>
