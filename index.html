@@ -58,14 +58,20 @@
       position: relative;
     }
 
+    /* Animation 3D du rabat de l'enveloppe */
     .envelope-wrapper {
       width: 110px; height: 90px;
       margin: 0 auto 15px auto;
       perspective: 600px;
     }
     .envelope-svg { width: 100%; height: 100%; overflow: visible; }
-    .envelope-flap { transform-origin: top center; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-    .envelope-open .envelope-flap { transform: rotateX(180deg); }
+    .envelope-flap { 
+      transform-origin: 50px 20px; 
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+    }
+    .envelope-open .envelope-flap { 
+      transform: rotateX(180deg); 
+    }
 
     .badge-title { font-size: 0.8rem; letter-spacing: 3px; color: var(--accent-gold); margin-bottom: 10px; text-transform: uppercase; font-weight: 600; }
     .envelope-box h2 { font-family: var(--font-title); font-size: 2.2rem; margin-bottom: 10px; font-weight: 400; }
@@ -409,8 +415,10 @@
           document.getElementById('guest-table-number').innerText = inviteTrouve.table;
           document.getElementById('guest_name_input').value = inviteTrouve.nom;
 
+          // Déclenche la bascule 3D du rabat
           envelopeWrapper.classList.add('envelope-open');
 
+          // Transition fluide vers la carte principale après l'ouverture
           setTimeout(() => {
             screen.style.transform = 'translateY(-100%)';
             screen.style.opacity = '0';
@@ -420,7 +428,7 @@
               main.style.display = 'block';
               setTimeout(() => { main.style.opacity = '1'; }, 50);
             }, 800);
-          }, 700);
+          }, 800);
 
         } else {
           errorMsg.innerText = "Ce numéro ne figure pas sur la liste des invités. Veuillez vérifier votre saisie.";
