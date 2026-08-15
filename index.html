@@ -41,7 +41,7 @@
     #auth-screen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(243, 240, 236, 0.85);
+      background: rgba(243, 240, 236, 0.88);
       backdrop-filter: blur(8px);
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       z-index: 1000;
@@ -54,25 +54,103 @@
       padding: 30px 25px;
       max-width: 450px; width: 90%;
       box-shadow: 0 15px 35px rgba(0,0,0,0.12);
-      border-radius: 6px;
+      border-radius: 8px;
       position: relative;
     }
 
-    /* Animation 3D du rabat de l'enveloppe */
-    .envelope-wrapper {
-      width: 110px; height: 90px;
-      margin: 0 auto 15px auto;
-      perspective: 600px;
-    }
-    .envelope-svg { width: 100%; height: 100%; overflow: visible; }
-    .envelope-flap { 
-      transform-origin: 50px 20px; 
-      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
-    }
-    .envelope-open .envelope-flap { 
-      transform: rotateX(180deg); 
+    /* --- ANIMATION 3D DE L'ENVELOPPE ET DU SCEAU --- */
+    .envelope-container {
+      position: relative;
+      width: 260px;
+      height: 170px;
+      margin: 0 auto 20px auto;
+      perspective: 1000px; /* Donne l'effet 3D */
     }
 
+    .envelope {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-color: #F2EBD9;
+      border-radius: 4px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Rabat supérieur qui pivote vers le haut */
+    .top-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 115px;
+      transform-origin: top center;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 4;
+    }
+
+    .flap-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.1));
+    }
+
+    /* Pochette avant de l'enveloppe */
+    .pocket-front {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .pocket-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Sceau de cire doré */
+    .wax-seal {
+      position: absolute;
+      top: 95px;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      width: 46px;
+      height: 46px;
+      background: radial-gradient(circle, #E5C365 0%, #C5A059 60%, #8A6D3B 100%);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #FFF;
+      font-family: var(--font-title);
+      font-weight: bold;
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3), inset 0 0 5px rgba(255,255,255,0.5);
+      border: 2px solid #B38F46;
+      z-index: 5;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    /* --- ÉTATS ANIMÉS (Déclenchés au clic/validation) --- */
+
+    /* Le rabat bascule à 180° vers le haut */
+    .envelope-open .top-flap {
+      transform: rotateX(180deg);
+      z-index: 1; /* Repasse derrière l'enveloppe en s'ouvrant */
+    }
+
+    /* Le sceau s'estompe et disparait */
+    .envelope-open .wax-seal {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.4);
+    }
+
+    /* Formulaire & Typographies */
     .badge-title { font-size: 0.8rem; letter-spacing: 3px; color: var(--accent-gold); margin-bottom: 10px; text-transform: uppercase; font-weight: 600; }
     .envelope-box h2 { font-family: var(--font-title); font-size: 2.2rem; margin-bottom: 10px; font-weight: 400; }
     .envelope-box p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 20px; }
@@ -228,22 +306,38 @@
 </head>
 <body>
 
-  <!-- Étape 1 : Authentification & Enveloppe -->
+  <!-- Étape 1 : Authentification & Enveloppe avec Sceau -->
   <div id="auth-screen">
     <div class="envelope-box">
       
-      <div class="envelope-wrapper" id="envelope-wrapper">
-        <svg class="envelope-svg" viewBox="0 0 100 80">
-          <rect x="5" y="20" width="90" height="55" rx="3" fill="#EFECE6" stroke="#8C7A6B" stroke-width="1.5"/>
-          <rect x="12" y="10" width="76" height="50" rx="2" fill="#FFFFFF" stroke="#D3C9BF" stroke-width="1"/>
-          <path d="M 5 75 L 50 45 L 95 75" fill="none" stroke="#8C7A6B" stroke-width="1.5"/>
-          <path d="M 5 20 L 40 48" fill="none" stroke="#D3C9BF" stroke-width="1"/>
-          <path d="M 95 20 L 60 48" fill="none" stroke="#D3C9BF" stroke-width="1"/>
-          <g class="envelope-flap">
-            <path d="M 5 20 L 50 48 L 95 20 Z" fill="#E8E2D9" stroke="#8C7A6B" stroke-width="1.5"/>
-            <circle cx="50" cy="38" r="5" fill="#C5A059"/>
-          </g>
-        </svg>
+      <!-- Enveloppe Interactive -->
+      <div class="envelope-container" id="envelope-wrapper">
+        <div class="envelope">
+          
+          <!-- Rabat supérieur qui s'ouvre vers le haut -->
+          <div class="top-flap">
+            <svg class="flap-svg" viewBox="0 0 260 115" preserveAspectRatio="none">
+              <path d="M 0 0 L 130 110 L 260 0 Z" fill="#E8E2D9" stroke="#8C7A6B" stroke-width="1.2"/>
+            </svg>
+          </div>
+
+          <!-- Sceau de cire doré au centre -->
+          <div class="wax-seal" id="wax-seal">
+            <span>S&amp;J</span>
+          </div>
+
+          <!-- Pochette avant -->
+          <div class="pocket-front">
+            <svg class="pocket-svg" viewBox="0 0 260 170" preserveAspectRatio="none">
+              <!-- Fond inférieur -->
+              <path d="M 0 170 L 130 65 L 260 170 Z" fill="#DFCFAB" stroke="#8C7A6B" stroke-width="1.2"/>
+              <!-- Bords latéraux -->
+              <path d="M 0 0 L 110 85 L 0 170 Z" fill="#EBDCB9" stroke="#8C7A6B" stroke-width="1.2"/>
+              <path d="M 260 0 L 150 85 L 260 170 Z" fill="#EBDCB9" stroke="#8C7A6B" stroke-width="1.2"/>
+            </svg>
+          </div>
+
+        </div>
       </div>
 
       <div class="badge-title">Invitation Privée</div>
@@ -294,7 +388,7 @@
       <p>Vous êtes invités à célébrer leur union. Votre présence à leurs côtés rendra ce moment encore plus mémorable.</p>
     </div>
 
-    <!-- Date placée en dessous -->
+    <!-- Date de l'événement -->
     <div class="wedding-date-badge">
       DIMANCHE 13 SEPTEMBRE 2026
     </div>
@@ -378,6 +472,7 @@
 
   </div>
 
+  <!-- SCRIPT JAVASCRIPT DE VÉRIFICATION ET D'ANIMATION -->
   <script>
     const baseInvites = [
       { tel: "0811234567", nom: "M. Patrick Kabamba", table: "Table d'Honneur" },
@@ -415,10 +510,10 @@
           document.getElementById('guest-table-number').innerText = inviteTrouve.table;
           document.getElementById('guest_name_input').value = inviteTrouve.nom;
 
-          // Déclenche la bascule 3D du rabat
+          // 1. Déclenche l'ouverture du rabat et la disparition du sceau
           envelopeWrapper.classList.add('envelope-open');
 
-          // Transition fluide vers la carte principale après l'ouverture
+          // 2. Attend la fin de l'animation de l'enveloppe puis fait défiler l'écran
           setTimeout(() => {
             screen.style.transform = 'translateY(-100%)';
             screen.style.opacity = '0';
@@ -428,7 +523,7 @@
               main.style.display = 'block';
               setTimeout(() => { main.style.opacity = '1'; }, 50);
             }, 800);
-          }, 800);
+          }, 850);
 
         } else {
           errorMsg.innerText = "Ce numéro ne figure pas sur la liste des invités. Veuillez vérifier votre saisie.";
