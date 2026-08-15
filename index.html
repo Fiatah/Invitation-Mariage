@@ -43,7 +43,7 @@
       color: var(--text-dark);
     }
 
-    /* CONTAINER PRINCIPAL DE LA PREMIÈRE PAGE */
+    /* PREMIÈRE PAGE (PAGE D'ACCUEIL AVEC ENVELOPPE) */
     .hero-container {
       text-align: center;
       width: 100%;
@@ -72,18 +72,18 @@
       letter-spacing: 1px;
     }
 
-    /* ENVELOPPE AGRANDIE & RÉALISTE AVEC EFFETS D'OMBRE */
+    /* STRUCTURE DE L'ENVELOPPE */
     .envelope-wrapper {
       position: relative;
-      width: 380px; /* Taille agrandie */
+      width: 380px;
       height: 260px;
       margin: 10px auto 25px auto;
-      perspective: 1400px; /* Perspective 3D prononcée */
+      perspective: 1400px;
       cursor: pointer;
       user-select: none;
     }
 
-    /* Ombre portée réaliste au sol */
+    /* Ombre portée au sol */
     .envelope-shadow {
       position: absolute;
       bottom: -15px;
@@ -96,11 +96,6 @@
       z-index: 0;
     }
 
-    .envelope-wrapper:hover .envelope-shadow {
-      transform: scale(1.05);
-      background: radial-gradient(ellipse at center, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0) 70%);
-    }
-
     .envelope-back {
       position: absolute;
       width: 100%;
@@ -111,31 +106,7 @@
       z-index: 1;
     }
 
-    /* CARTE CACHÉE (QUI VA SE DÉPLOYER ET DEVENIR LA PAGE FINALE) */
-    .invitation-card {
-      position: absolute;
-      top: 10px;
-      left: 15px;
-      width: 350px;
-      height: 240px;
-      background: #FFFFFF;
-      border-radius: 6px;
-      padding: 30px 25px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-      z-index: 2;
-      border: 1px solid var(--border-color);
-      transform-origin: center top;
-      overflow: hidden;
-    }
-
-    /* APPARITION PROGRESSIVE DU CONTENU DE LA CARTE QUAND ELLE S'AGRANDIT */
-    .card-content-expanded {
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      pointer-events: none;
-    }
-
-    /* POCHETTE AVANT (CÔTÉS ET BAS) */
+    /* POCHETTE AVANT (BAS ET CÔTÉS) */
     .envelope-front-pocket {
       position: absolute;
       top: 0;
@@ -146,7 +117,7 @@
       pointer-events: none;
     }
 
-    /* RABAT SUPÉRIEUR QUI PIVOTE EN 3D */
+    /* RABAT SUPÉRIEUR */
     .envelope-top-flap {
       position: absolute;
       top: 0;
@@ -164,7 +135,7 @@
       filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.12));
     }
 
-    /* SCEAU DE CIRE DORÉ ÉLÉGANT EN RELIEF */
+    /* SCEAU DE CIRE DORÉ */
     .wax-seal {
       position: absolute;
       top: 140px;
@@ -192,7 +163,7 @@
       transform: translate(-50%, -50%) scale(1.06);
     }
 
-    /* CONSIGNES D'INVITATION À CLIQUER */
+    /* INSTRUCTION DE CLIC */
     .click-instruction {
       display: inline-flex;
       align-items: center;
@@ -211,25 +182,35 @@
       50% { transform: translateY(-4px); opacity: 1; }
     }
 
-    /* STYLES DE LA CARTE UNE FOIS DÉPLOYÉE (PAGE D'INVITATION COMPLETE) */
-    .card-preview-text {
-      text-align: center;
-    }
-    .card-preview-text h3 {
-      font-family: var(--font-title);
-      font-size: 2rem;
-      margin-bottom: 5px;
+    /* DEUXIÈME PAGE : LA VRAIE PAGE D'INVITATION (MASQUÉE AU DÉPART) */
+    .invitation-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: var(--bg-color);
+      z-index: 100;
+      display: none; /* Masquée au départ */
+      opacity: 0;
+      overflow-y: auto;
+      padding: 40px 20px;
     }
 
-    .full-invitation-details {
-      max-width: 650px;
+    .invitation-card-container {
+      max-width: 680px;
       margin: 0 auto;
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 40px 30px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-color);
       text-align: center;
     }
 
     .hero-photo {
       width: 100%;
-      max-height: 400px;
+      max-height: 380px;
       object-fit: cover;
       border-radius: 8px;
       margin: 20px 0;
@@ -283,15 +264,15 @@
     /* MEDIA QUERIES MOBILE */
     @media (max-width: 450px) {
       .envelope-wrapper { width: 310px; height: 215px; }
-      .invitation-card { width: 280px; height: 195px; left: 15px; }
       .envelope-top-flap { height: 135px; }
       .wax-seal { top: 115px; width: 50px; height: 50px; font-size: 0.95rem; }
+      .invitation-card-container { padding: 25px 18px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- PREMIÈRE PAGE : L'ENVELOPPE RÉALISTE ET DÉSIRABILITÉ -->
+  <!-- PREMIÈRE PAGE : ACCUEIL ET ENVELOPPE -->
   <div class="hero-container" id="heroContainer">
     
     <div class="badge-title">Invitation Privée</div>
@@ -300,74 +281,10 @@
     <!-- ENVELOPPE INTERACTIVE -->
     <div class="envelope-wrapper" id="envelopeWrapper">
       
-      <!-- Ombre au sol -->
       <div class="envelope-shadow"></div>
-
-      <!-- Fond intérieur de l'enveloppe -->
       <div class="envelope-back"></div>
 
-      <!-- LA CARTE (CACHÉE PUIS SE DÉPLOIE EN PAGE FINALE) -->
-      <div class="invitation-card" id="invitationCard">
-        
-        <!-- Aperçu réduit visible au départ -->
-        <div class="card-preview-text" id="cardPreview">
-          <p style="text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); font-size: 0.75rem;">Mariage de</p>
-          <h3>Steve &amp; Joyce</h3>
-          <p style="font-size: 0.9rem; color: #555; margin-top: 5px;">Vous êtes chaleureusement invités</p>
-          <p style="margin-top: 15px; font-size: 0.8rem; color: var(--accent-gold); font-weight: 600;">DIMANCHE 13 SEPTEMBRE 2026</p>
-        </div>
-
-        <!-- CONTENU COMPLET QUI S'AFFICHE AU DÉPLOIEMENT -->
-        <div class="card-content-expanded" id="cardExpandedContent">
-          <div class="full-invitation-details">
-            <p style="letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); font-size: 0.85rem;">Ensemble avec leurs familles</p>
-            <h2 style="font-family: var(--font-title); font-size: 3rem; font-weight: 400; margin: 5px 0 15px 0;">Steve &amp; Joyce</h2>
-            <p style="font-size: 1.05rem; color: #444; line-height: 1.6;">Ont la joie de vous inviter à célébrer leur union et leur amour.</p>
-
-            <div class="wedding-date-badge">DIMANCHE 13 SEPTEMBRE 2026</div>
-
-            <img src="SK.jpg" alt="Steve & Joyce" class="hero-photo" onerror="this.style.display='none'">
-
-            <!-- Lieu de la cérémonie -->
-            <div class="venue-card">
-              <h4>Le Lieu de la Célébration</h4>
-              <p style="font-size: 1.1rem; color: var(--accent-gold-dark); font-weight: 600; text-align: center;">Domaine des Lumières</p>
-              <p style="color: var(--text-muted); text-align: center;">124 Avenue des Roses, Kinshasa</p>
-            </div>
-
-            <!-- Confirmation RSVP -->
-            <div class="rsvp-card">
-              <h4>Confirmation de Présence (RSVP)</h4>
-              <form action="https://formspree.io/f/xzyqxxxx" method="POST">
-                <div class="form-group">
-                  <label>Votre Nom &amp; Prénom</label>
-                  <input type="text" name="Nom" placeholder="Saisissez votre nom" required>
-                </div>
-                <div class="form-group">
-                  <label>Serez-vous présent(e) ?</label>
-                  <select name="Presence" required>
-                    <option value="Oui">Oui, avec grand plaisir</option>
-                    <option value="Non">Malheureusement non</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Préférence de Boisson</label>
-                  <select name="Boisson">
-                    <option value="Eau / Jus">Jus / Boisson rafraîchissante</option>
-                    <option value="Bière">Bière</option>
-                    <option value="Vin / Champagne">Vin / Champagne</option>
-                  </select>
-                </div>
-                <button type="submit" class="btn-submit">Confirmer ma présence</button>
-              </form>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Rabat supérieur (Top Flap) -->
+      <!-- Rabat supérieur -->
       <div class="envelope-top-flap" id="topFlap">
         <svg class="flap-svg" viewBox="0 0 380 165" preserveAspectRatio="none">
           <path d="M 0 0 L 190 155 L 380 0 Z" fill="#EFE6D8" stroke="#C5A059" stroke-width="1.2"/>
@@ -382,9 +299,7 @@
       <!-- Pochette avant -->
       <div class="envelope-front-pocket">
         <svg class="pocket-svg" viewBox="0 0 380 260" preserveAspectRatio="none">
-          <!-- Rabat bas -->
           <path d="M 0 260 L 190 110 L 380 260 Z" fill="#E4D9C6" stroke="#C5A059" stroke-width="1"/>
-          <!-- Rabats latéraux -->
           <path d="M 0 0 L 160 130 L 0 260 Z" fill="#EADECB" stroke="#C5A059" stroke-width="1"/>
           <path d="M 380 0 L 220 130 L 380 260 Z" fill="#EADECB" stroke="#C5A059" stroke-width="1"/>
         </svg>
@@ -392,11 +307,59 @@
 
     </div>
 
-    <!-- Pousser la personne à cliquer -->
+    <!-- Pousser à cliquer -->
     <div class="click-instruction" id="clickInstruction">
       <span>✉</span> Veuillez cliquer sur l'enveloppe pour ouvrir l'invitation
     </div>
 
+  </div>
+
+  <!-- DEUXIÈME PAGE : LA PAGE COMPLÈTE QUI S'AFFICHE APRÈS LE ZOOM -->
+  <div class="invitation-page" id="invitationPage">
+    <div class="invitation-card-container">
+      <p style="letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); font-size: 0.85rem;">Ensemble avec leurs familles</p>
+      <h2 style="font-family: var(--font-title); font-size: 3rem; font-weight: 400; margin: 5px 0 15px 0;">Steve &amp; Joyce</h2>
+      <p style="font-size: 1.05rem; color: #444; line-height: 1.6;">Ont la joie de vous inviter à célébrer leur union et leur amour.</p>
+
+      <div class="wedding-date-badge">DIMANCHE 13 SEPTEMBRE 2026</div>
+
+      <img src="SK.jpg" alt="Steve & Joyce" class="hero-photo" onerror="this.style.display='none'">
+
+      <!-- Lieu de la cérémonie -->
+      <div class="venue-card">
+        <h4>Le Lieu de la Célébration</h4>
+        <p style="font-size: 1.1rem; color: var(--accent-gold-dark); font-weight: 600; text-align: center;">Domaine des Lumières</p>
+        <p style="color: var(--text-muted); text-align: center;">124 Avenue des Roses, Kinshasa</p>
+      </div>
+
+      <!-- Confirmation RSVP -->
+      <div class="rsvp-card">
+        <h4>Confirmation de Présence (RSVP)</h4>
+        <form action="https://formspree.io/f/xzyqxxxx" method="POST">
+          <div class="form-group">
+            <label>Votre Nom &amp; Prénom</label>
+            <input type="text" name="Nom" placeholder="Saisissez votre nom" required>
+          </div>
+          <div class="form-group">
+            <label>Serez-vous présent(e) ?</label>
+            <select name="Presence" required>
+              <option value="Oui">Oui, avec grand plaisir</option>
+              <option value="Non">Malheureusement non</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Préférence de Boisson</label>
+            <select name="Boisson">
+              <option value="Eau / Jus">Jus / Boisson rafraîchissante</option>
+              <option value="Bière">Bière</option>
+              <option value="Vin / Champagne">Vin / Champagne</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-submit">Confirmer ma présence</button>
+        </form>
+      </div>
+
+    </div>
   </div>
 
   <script>
@@ -405,79 +368,66 @@
       const clickInstruction = document.getElementById('clickInstruction');
       const topFlap = document.getElementById('topFlap');
       const waxSeal = document.getElementById('waxSeal');
-      const invitationCard = document.getElementById('invitationCard');
-      const cardPreview = document.getElementById('cardPreview');
-      const cardExpandedContent = document.getElementById('cardExpandedContent');
       const heroContainer = document.getElementById('heroContainer');
+      const invitationPage = document.getElementById('invitationPage');
 
       let isOpen = false;
 
-      function openAndExpandEnvelope() {
+      function openAndZoomSequence() {
         if (isOpen) return;
         isOpen = true;
 
-        // Timeline GSAP
+        // Timeline GSAP pour orchestrer l'effet de zoom et l'ouverture
         const tl = gsap.timeline();
 
-        // 1. Masquer l'instruction de clic
-        tl.to(clickInstruction, { opacity: 0, duration: 0.3 })
+        // 1. Masquer le texte "Veuillez cliquer..." doucement
+        tl.to(clickInstruction, { opacity: 0, duration: 0.5 })
 
-        // 2. Le sceau de cire disparaît
+        // 2. Le sceau de cire s'efface lentement
         .to(waxSeal, {
           opacity: 0,
           scale: 0.3,
-          duration: 0.4,
-          ease: "power2.in"
-        }, "-=0.1")
-
-        // 3. Ouverture 3D du rabat supérieur
-        .to(topFlap, {
-          rotateX: 180,
           duration: 0.8,
-          ease: "power2.inOut",
-          onComplete: () => {
-            topFlap.style.zIndex = 1; // Passe derrière l'enveloppe
-          }
+          ease: "power2.in"
         }, "-=0.2")
 
-        // 4. La carte sort légèrement vers le haut
-        .to(invitationCard, {
-          y: -120,
-          zIndex: 10,
-          duration: 0.8,
-          ease: "power2.out"
-        })
+        // 3. Ouverture lente du rabat 3D + Zoom progressif de l'enveloppe
+        .to(topFlap, {
+          rotateX: 180,
+          duration: 1.6, // Ouverture deux fois plus lente
+          ease: "power2.inOut",
+          onComplete: () => {
+            topFlap.style.zIndex = 1; // Passe le rabat derrière
+          }
+        }, "-=0.6")
 
-        // 5. La carte se déploie pour devenir la page complète
-        .to(invitationCard, {
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          xPercent: -50,
-          yPercent: -50,
-          width: "92vw",
-          height: "90vh",
-          maxWidth: "750px",
-          maxHeight: "90vh",
-          borderRadius: "12px",
-          padding: "40px 25px",
-          boxShadow: "0 25px 60px rgba(0,0,0,0.25)",
-          overflowY: "auto",
-          duration: 1,
-          ease: "power3.inOut"
-        })
+        .to(envelopeWrapper, {
+          scale: 2.2, // Effet de Zoom avant sur l'enveloppe
+          duration: 2.2,
+          ease: "power1.inOut"
+        }, "-=1.6")
 
-        // 6. Remplacement du texte court par le contenu d'invitation complet
-        .to(cardPreview, { display: "none", opacity: 0, duration: 0.2 }, "-=0.8")
-        .to(cardExpandedContent, {
+        // 4. L'enveloppe et le titre s'effacent doucement
+        .to(heroContainer, {
+          opacity: 0,
+          duration: 1.2,
+          ease: "power2.out",
+          onComplete: () => {
+            heroContainer.style.display = 'none';
+          }
+        }, "-=0.8")
+
+        // 5. Affichage progressif (fade-in) de la deuxième page d'invitation
+        .to(invitationPage, {
+          display: "block",
           opacity: 1,
-          pointerEvents: "auto",
-          duration: 0.6
-        }, "-=0.4");
+          duration: 1.4,
+          ease: "power2.out"
+        });
       }
 
-      envelopeWrapper.addEventListener('click', openAndExpandEnvelope);
-      clickInstruction.addEventListener('click', openAndExpandEnvelope);
+      envelopeWrapper.addEventListener('click', openAndZoomSequence);
+      clickInstruction.addEventListener('click', openAndZoomSequence);
     });
   </script>
 </body>
