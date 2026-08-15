@@ -5,21 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Invitation de Mariage — Steve & Joyce</title>
   
-  <!-- Polices Google Fonts élégantes -->
+  <!-- Polices Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Moteur d'animation GSAP (GreenSock) 3D -->
+  <!-- Moteur d'animation GSAP (GreenSock) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
   <style>
     :root {
-      --bg-color: #F6F2EB;
-      --envelope-paper: #EFE8DC;
-      --envelope-inner: #DFD5C3;
+      --bg-color: #F5EFE6;
+      --envelope-paper: #EFE6D8;
+      --envelope-inner: #DED3C1;
       --accent-gold: #C5A059;
+      --accent-gold-dark: #9E7D3B;
       --text-dark: #2A2A2A;
+      --text-muted: #666666;
+      --border-color: #E2D7C3;
       --font-title: 'Cormorant Garamond', serif;
       --font-body: 'Montserrat', sans-serif;
     }
@@ -28,6 +31,8 @@
 
     body {
       background-color: var(--bg-color);
+      background-image: radial-gradient(#E8DFD1 1px, transparent 1px);
+      background-size: 20px 20px;
       font-family: var(--font-body);
       min-height: 100vh;
       display: flex;
@@ -35,39 +40,65 @@
       align-items: center;
       overflow-x: hidden;
       padding: 20px;
+      color: var(--text-dark);
     }
 
-    /* CONTENEUR DE L'ENVELOPPE ET D'AUTHENTIFICATION */
-    .envelope-section {
+    /* CONTAINER PRINCIPAL DE LA PREMIÈRE PAGE */
+    .hero-container {
       text-align: center;
       width: 100%;
-      max-width: 420px;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
     }
 
-    .envelope-title {
-      font-family: var(--font-title);
-      font-size: 2.2rem;
-      color: var(--text-dark);
-      margin-bottom: 5px;
-      font-weight: 400;
-    }
-
-    .envelope-subtitle {
+    .badge-title {
       font-size: 0.85rem;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--accent-gold);
-      margin-bottom: 30px;
+      margin-bottom: 8px;
+      font-weight: 600;
     }
 
-    /* STRUCTURE 3D DE L'ENVELOPPE */
+    .main-title {
+      font-family: var(--font-title);
+      font-size: 2.8rem;
+      color: var(--text-dark);
+      margin-bottom: 25px;
+      font-weight: 400;
+      letter-spacing: 1px;
+    }
+
+    /* ENVELOPPE AGRANDIE & RÉALISTE AVEC EFFETS D'OMBRE */
     .envelope-wrapper {
       position: relative;
-      width: 320px;
-      height: 220px;
-      margin: 0 auto 30px auto;
-      perspective: 1200px; /* Effet de profondeur 3D */
+      width: 380px; /* Taille agrandie */
+      height: 260px;
+      margin: 10px auto 25px auto;
+      perspective: 1400px; /* Perspective 3D prononcée */
       cursor: pointer;
+      user-select: none;
+    }
+
+    /* Ombre portée réaliste au sol */
+    .envelope-shadow {
+      position: absolute;
+      bottom: -15px;
+      left: 5%;
+      width: 90%;
+      height: 25px;
+      background: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 70%);
+      border-radius: 50%;
+      transition: all 0.4s ease;
+      z-index: 0;
+    }
+
+    .envelope-wrapper:hover .envelope-shadow {
+      transform: scale(1.05);
+      background: radial-gradient(ellipse at center, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0) 70%);
     }
 
     .envelope-back {
@@ -75,54 +106,36 @@
       width: 100%;
       height: 100%;
       background-color: var(--envelope-inner);
-      border-radius: 6px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+      border-radius: 8px;
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.08);
+      z-index: 1;
     }
 
-    /* CARTE D'INVITATION CACHÉE À L'INTÉRIEUR */
+    /* CARTE CACHÉE (QUI VA SE DÉPLOYER ET DEVENIR LA PAGE FINALE) */
     .invitation-card {
       position: absolute;
       top: 10px;
       left: 15px;
-      width: 290px;
-      height: 200px;
+      width: 350px;
+      height: 240px;
       background: #FFFFFF;
-      border-radius: 4px;
-      padding: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border-radius: 6px;
+      padding: 30px 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
       z-index: 2;
-      text-align: center;
-      border: 1px solid #E8E2D9;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      transform: translateY(0);
+      border: 1px solid var(--border-color);
+      transform-origin: center top;
+      overflow: hidden;
     }
 
-    .invitation-card h3 {
-      font-family: var(--font-title);
-      font-size: 1.8rem;
-      color: var(--text-dark);
-      margin-bottom: 5px;
+    /* APPARITION PROGRESSIVE DU CONTENU DE LA CARTE QUAND ELLE S'AGRANDIT */
+    .card-content-expanded {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
     }
 
-    .invitation-card p {
-      font-size: 0.85rem;
-      color: #666;
-    }
-
-    .invitation-card .date-badge {
-      margin-top: 10px;
-      font-size: 0.75rem;
-      letter-spacing: 2px;
-      color: var(--accent-gold);
-      border-top: 1px solid var(--accent-gold);
-      border-bottom: 1px solid var(--accent-gold);
-      padding: 4px 10px;
-    }
-
-    /* POCHETTE AVANT (BAS ET CÔTÉS) */
+    /* POCHETTE AVANT (CÔTÉS ET BAS) */
     .envelope-front-pocket {
       position: absolute;
       top: 0;
@@ -133,13 +146,13 @@
       pointer-events: none;
     }
 
-    /* RABAT SUPÉRIEUR (VOLET QUI PIVOTE À 180 DEG) */
+    /* RABAT SUPÉRIEUR QUI PIVOTE EN 3D */
     .envelope-top-flap {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 140px;
+      height: 165px;
       transform-origin: top center;
       z-index: 4;
     }
@@ -148,18 +161,18 @@
       width: 100%;
       height: 100%;
       display: block;
-      filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.06));
+      filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.12));
     }
 
-    /* SCEAU DE CIRE EN RELIEF */
+    /* SCEAU DE CIRE DORÉ ÉLÉGANT EN RELIEF */
     .wax-seal {
       position: absolute;
-      top: 120px;
+      top: 140px;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 52px;
-      height: 52px;
-      background: radial-gradient(circle, #E5C365 0%, #C5A059 60%, #8A6D3B 100%);
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle, #ECC870 0%, #C5A059 55%, #806124 100%);
       border-radius: 50%;
       display: flex;
       justify-content: center;
@@ -167,89 +180,197 @@
       color: #FFF;
       font-family: var(--font-title);
       font-weight: bold;
-      font-size: 1rem;
+      font-size: 1.15rem;
       letter-spacing: 1px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25), inset 0 0 6px rgba(255,255,255,0.5);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3), inset 0 0 8px rgba(255,255,255,0.6);
       border: 2px solid #B38F46;
       z-index: 5;
+      transition: transform 0.3s ease;
     }
 
-    /* FORMULAIRE DE VÉRIFICATION */
-    .auth-form {
-      background: #FFFFFF;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-      border: 1px solid #E8E2D9;
+    .envelope-wrapper:hover .wax-seal {
+      transform: translate(-50%, -50%) scale(1.06);
     }
 
-    .input-phone {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #E8E2D9;
-      border-radius: 4px;
+    /* CONSIGNES D'INVITATION À CLIQUER */
+    .click-instruction {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       font-size: 0.95rem;
-      text-align: center;
-      outline: none;
-      margin-bottom: 12px;
-      font-family: inherit;
-    }
-
-    .input-phone:focus {
-      border-color: var(--accent-gold);
-    }
-
-    .btn-open {
-      width: 100%;
-      padding: 12px;
-      background: var(--text-dark);
-      color: #FFF;
-      border: none;
-      border-radius: 4px;
-      font-size: 0.85rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .btn-open:hover {
-      background: var(--accent-gold);
-    }
-
-    .error-msg {
-      color: #D9534F;
-      font-size: 0.85rem;
+      color: var(--accent-gold-dark);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      animation: pulse 2s infinite;
       margin-top: 10px;
-      display: none;
+      cursor: pointer;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translateY(0); opacity: 0.85; }
+      50% { transform: translateY(-4px); opacity: 1; }
+    }
+
+    /* STYLES DE LA CARTE UNE FOIS DÉPLOYÉE (PAGE D'INVITATION COMPLETE) */
+    .card-preview-text {
+      text-align: center;
+    }
+    .card-preview-text h3 {
+      font-family: var(--font-title);
+      font-size: 2rem;
+      margin-bottom: 5px;
+    }
+
+    .full-invitation-details {
+      max-width: 650px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .hero-photo {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 20px 0;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border: 1px solid var(--border-color);
+    }
+
+    .wedding-date-badge {
+      display: inline-block;
+      border-top: 1px solid var(--accent-gold);
+      border-bottom: 1px solid var(--accent-gold);
+      padding: 8px 25px;
+      margin: 20px 0;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      color: var(--accent-gold-dark);
+      font-weight: 600;
+    }
+
+    .venue-card, .rsvp-card {
+      background: rgba(245, 239, 230, 0.5);
+      border: 1px solid var(--border-color);
+      padding: 25px;
+      border-radius: 8px;
+      margin: 25px 0;
+      text-align: left;
+    }
+
+    .venue-card h4, .rsvp-card h4 {
+      font-family: var(--font-title);
+      font-size: 1.6rem;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; color: var(--text-muted); font-weight: 500; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 12px; border: 1px solid var(--border-color);
+      border-radius: 4px; font-family: inherit; background: #FFF; font-size: 0.95rem;
+      outline: none;
+    }
+
+    .btn-submit {
+      width: 100%; padding: 14px; background: var(--text-dark); color: #FFF;
+      text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;
+      border: none; border-radius: 4px; cursor: pointer; transition: background 0.3s;
+    }
+    .btn-submit:hover { background: var(--accent-gold); }
+
+    /* MEDIA QUERIES MOBILE */
+    @media (max-width: 450px) {
+      .envelope-wrapper { width: 310px; height: 215px; }
+      .invitation-card { width: 280px; height: 195px; left: 15px; }
+      .envelope-top-flap { height: 135px; }
+      .wax-seal { top: 115px; width: 50px; height: 50px; font-size: 0.95rem; }
     }
   </style>
 </head>
 <body>
 
-  <div class="envelope-section">
+  <!-- PREMIÈRE PAGE : L'ENVELOPPE RÉALISTE ET DÉSIRABILITÉ -->
+  <div class="hero-container" id="heroContainer">
     
-    <div class="envelope-subtitle">Invitation Privée</div>
-    <h2 class="envelope-title">Steve &amp; Joyce</h2>
+    <div class="badge-title">Invitation Privée</div>
+    <h1 class="main-title">Steve &amp; Joyce</h1>
 
-    <!-- L'ENVELOPPE INTERACTIVE -->
+    <!-- ENVELOPPE INTERACTIVE -->
     <div class="envelope-wrapper" id="envelopeWrapper">
       
-      <!-- Fond intérieur -->
+      <!-- Ombre au sol -->
+      <div class="envelope-shadow"></div>
+
+      <!-- Fond intérieur de l'enveloppe -->
       <div class="envelope-back"></div>
 
-      <!-- La carte d'invitation -->
+      <!-- LA CARTE (CACHÉE PUIS SE DÉPLOIE EN PAGE FINALE) -->
       <div class="invitation-card" id="invitationCard">
-        <p style="text-transform: uppercase; letter-spacing: 1px; color: #888; font-size: 0.7rem;">Mariage de</p>
-        <h3>Steve &amp; Joyce</h3>
-        <p id="guestNameDisplay">Cher(e) Invité(e)</p>
-        <div class="date-badge">13 SEPTEMBRE 2026</div>
+        
+        <!-- Aperçu réduit visible au départ -->
+        <div class="card-preview-text" id="cardPreview">
+          <p style="text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); font-size: 0.75rem;">Mariage de</p>
+          <h3>Steve &amp; Joyce</h3>
+          <p style="font-size: 0.9rem; color: #555; margin-top: 5px;">Vous êtes chaleureusement invités</p>
+          <p style="margin-top: 15px; font-size: 0.8rem; color: var(--accent-gold); font-weight: 600;">DIMANCHE 13 SEPTEMBRE 2026</p>
+        </div>
+
+        <!-- CONTENU COMPLET QUI S'AFFICHE AU DÉPLOIEMENT -->
+        <div class="card-content-expanded" id="cardExpandedContent">
+          <div class="full-invitation-details">
+            <p style="letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); font-size: 0.85rem;">Ensemble avec leurs familles</p>
+            <h2 style="font-family: var(--font-title); font-size: 3rem; font-weight: 400; margin: 5px 0 15px 0;">Steve &amp; Joyce</h2>
+            <p style="font-size: 1.05rem; color: #444; line-height: 1.6;">Ont la joie de vous inviter à célébrer leur union et leur amour.</p>
+
+            <div class="wedding-date-badge">DIMANCHE 13 SEPTEMBRE 2026</div>
+
+            <img src="SK.jpg" alt="Steve & Joyce" class="hero-photo" onerror="this.style.display='none'">
+
+            <!-- Lieu de la cérémonie -->
+            <div class="venue-card">
+              <h4>Le Lieu de la Célébration</h4>
+              <p style="font-size: 1.1rem; color: var(--accent-gold-dark); font-weight: 600; text-align: center;">Domaine des Lumières</p>
+              <p style="color: var(--text-muted); text-align: center;">124 Avenue des Roses, Kinshasa</p>
+            </div>
+
+            <!-- Confirmation RSVP -->
+            <div class="rsvp-card">
+              <h4>Confirmation de Présence (RSVP)</h4>
+              <form action="https://formspree.io/f/xzyqxxxx" method="POST">
+                <div class="form-group">
+                  <label>Votre Nom &amp; Prénom</label>
+                  <input type="text" name="Nom" placeholder="Saisissez votre nom" required>
+                </div>
+                <div class="form-group">
+                  <label>Serez-vous présent(e) ?</label>
+                  <select name="Presence" required>
+                    <option value="Oui">Oui, avec grand plaisir</option>
+                    <option value="Non">Malheureusement non</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Préférence de Boisson</label>
+                  <select name="Boisson">
+                    <option value="Eau / Jus">Jus / Boisson rafraîchissante</option>
+                    <option value="Bière">Bière</option>
+                    <option value="Vin / Champagne">Vin / Champagne</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn-submit">Confirmer ma présence</button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+
       </div>
 
       <!-- Rabat supérieur (Top Flap) -->
       <div class="envelope-top-flap" id="topFlap">
-        <svg class="flap-svg" viewBox="0 0 320 140" preserveAspectRatio="none">
-          <path d="M 0 0 L 160 135 L 320 0 Z" fill="#EFE8DC" stroke="#C5A059" stroke-width="1"/>
+        <svg class="flap-svg" viewBox="0 0 380 165" preserveAspectRatio="none">
+          <path d="M 0 0 L 190 155 L 380 0 Z" fill="#EFE6D8" stroke="#C5A059" stroke-width="1.2"/>
         </svg>
       </div>
 
@@ -260,113 +381,103 @@
 
       <!-- Pochette avant -->
       <div class="envelope-front-pocket">
-        <svg class="pocket-svg" viewBox="0 0 320 220" preserveAspectRatio="none">
-          <!-- Rabat du bas -->
-          <path d="M 0 220 L 160 90 L 320 220 Z" fill="#E2D8C7" stroke="#C5A059" stroke-width="0.8"/>
-          <!-- Rabats de gauche et droite -->
-          <path d="M 0 0 L 135 110 L 0 220 Z" fill="#EAE0D0" stroke="#C5A059" stroke-width="0.8"/>
-          <path d="M 320 0 L 185 110 L 320 220 Z" fill="#EAE0D0" stroke="#C5A059" stroke-width="0.8"/>
+        <svg class="pocket-svg" viewBox="0 0 380 260" preserveAspectRatio="none">
+          <!-- Rabat bas -->
+          <path d="M 0 260 L 190 110 L 380 260 Z" fill="#E4D9C6" stroke="#C5A059" stroke-width="1"/>
+          <!-- Rabats latéraux -->
+          <path d="M 0 0 L 160 130 L 0 260 Z" fill="#EADECB" stroke="#C5A059" stroke-width="1"/>
+          <path d="M 380 0 L 220 130 L 380 260 Z" fill="#EADECB" stroke="#C5A059" stroke-width="1"/>
         </svg>
       </div>
 
     </div>
 
-    <!-- Formulaire d'ouverture par téléphone -->
-    <div class="auth-form">
-      <input type="text" id="phoneInput" class="input-phone" placeholder="Ex: 0811234567" autocomplete="off">
-      <button type="button" id="openBtn" class="btn-open">✉ Ouvrir L'Invitation</button>
-      <div id="errorMsg" class="error-msg">Ce numéro ne figure pas sur la liste des invités.</div>
+    <!-- Pousser la personne à cliquer -->
+    <div class="click-instruction" id="clickInstruction">
+      <span>✉</span> Veuillez cliquer sur l'enveloppe pour ouvrir l'invitation
     </div>
 
   </div>
 
   <script>
-    // Liste des invités
-    const guestList = [
-      { tel: "0811234567", nom: "M. Patrick Kabamba" },
-      { tel: "0829876543", nom: "Mme Clarisse Tshilombo" },
-      { tel: "0842287075", nom: "M. Steve Tshiniama" },
-      { tel: "0891898346", nom: "Mme Joyce Kabambi" }
-    ];
-
     document.addEventListener("DOMContentLoaded", () => {
       const envelopeWrapper = document.getElementById('envelopeWrapper');
+      const clickInstruction = document.getElementById('clickInstruction');
       const topFlap = document.getElementById('topFlap');
       const waxSeal = document.getElementById('waxSeal');
       const invitationCard = document.getElementById('invitationCard');
-      const openBtn = document.getElementById('openBtn');
-      const phoneInput = document.getElementById('phoneInput');
-      const errorMsg = document.getElementById('errorMsg');
-      const guestNameDisplay = document.getElementById('guestNameDisplay');
+      const cardPreview = document.getElementById('cardPreview');
+      const cardExpandedContent = document.getElementById('cardExpandedContent');
+      const heroContainer = document.getElementById('heroContainer');
 
       let isOpen = false;
 
-      function triggerOpeningSequence(guestName) {
+      function openAndExpandEnvelope() {
         if (isOpen) return;
         isOpen = true;
 
-        if (guestName) {
-          guestNameDisplay.innerText = guestName;
-        }
-
-        // Timeline GSAP pour orchestrer l'ouverture 3D de l'enveloppe
+        // Timeline GSAP
         const tl = gsap.timeline();
 
-        // 1. Le sceau de cire s'estompe et diminue de taille
-        tl.to(waxSeal, {
+        // 1. Masquer l'instruction de clic
+        tl.to(clickInstruction, { opacity: 0, duration: 0.3 })
+
+        // 2. Le sceau de cire disparaît
+        .to(waxSeal, {
           opacity: 0,
-          scale: 0.4,
+          scale: 0.3,
           duration: 0.4,
           ease: "power2.in"
-        })
-        
-        // 2. Le rabat supérieur pivote à 180° vers le haut en 3D
+        }, "-=0.1")
+
+        // 3. Ouverture 3D du rabat supérieur
         .to(topFlap, {
           rotateX: 180,
           duration: 0.8,
           ease: "power2.inOut",
           onComplete: () => {
-            // Passe le rabat derrière le fond de l'enveloppe une fois ouvert
-            topFlap.style.zIndex = 1;
+            topFlap.style.zIndex = 1; // Passe derrière l'enveloppe
           }
         }, "-=0.2")
 
-        // 3. La carte d'invitation glisse hors de l'enveloppe vers le haut
+        // 4. La carte sort légèrement vers le haut
         .to(invitationCard, {
-          y: -140,
-          zIndex: 6,
+          y: -120,
+          zIndex: 10,
+          duration: 0.8,
+          ease: "power2.out"
+        })
+
+        // 5. La carte se déploie pour devenir la page complète
+        .to(invitationCard, {
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          xPercent: -50,
+          yPercent: -50,
+          width: "92vw",
+          height: "90vh",
+          maxWidth: "750px",
+          maxHeight: "90vh",
+          borderRadius: "12px",
+          padding: "40px 25px",
+          boxShadow: "0 25px 60px rgba(0,0,0,0.25)",
+          overflowY: "auto",
           duration: 1,
-          ease: "power3.out"
-        }, "+=0.1");
+          ease: "power3.inOut"
+        })
+
+        // 6. Remplacement du texte court par le contenu d'invitation complet
+        .to(cardPreview, { display: "none", opacity: 0, duration: 0.2 }, "-=0.8")
+        .to(cardExpandedContent, {
+          opacity: 1,
+          pointerEvents: "auto",
+          duration: 0.6
+        }, "-=0.4");
       }
 
-      // Action lors du clic sur le bouton
-      openBtn.addEventListener('click', () => {
-        const inputVal = phoneInput.value.trim().replace(/\D/g, '');
-        
-        if (!inputVal) {
-          errorMsg.innerText = "Veuillez entrer votre numéro de téléphone.";
-          errorMsg.style.display = 'block';
-          return;
-        }
-
-        const foundGuest = guestList.find(g => g.tel.replace(/\D/g, '') === inputVal);
-
-        if (foundGuest) {
-          errorMsg.style.display = 'none';
-          triggerOpeningSequence(foundGuest.nom);
-        } else {
-          errorMsg.innerText = "Ce numéro ne figure pas sur la liste des invités.";
-          errorMsg.style.display = 'block';
-        }
-      });
-
-      // Permet également d'ouvrir l'enveloppe en cliquant directement dessus
-      envelopeWrapper.addEventListener('click', () => {
-        if (!isOpen) {
-          triggerOpeningSequence("Invité(e) d'Honneur");
-        }
-      });
+      envelopeWrapper.addEventListener('click', openAndExpandEnvelope);
+      clickInstruction.addEventListener('click', openAndExpandEnvelope);
     });
   </script>
 </body>
